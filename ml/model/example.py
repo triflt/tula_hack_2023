@@ -17,10 +17,10 @@ if __name__ == "__main__":
     DEVICE = CONFIG["device"]
     CLASSIFIER_PATH = CONFIG["classifier_path"]
 
-    segmentator = Segmentator(CHECKPOINT_PATH, DEVICE)
+    segmentator = Segmentator(path=CHECKPOINT_PATH, device=DEVICE)
 
     classifier_model = torch.load(CLASSIFIER_PATH)
-    classifier = Classifier(model=classifier_model)
+    classifier = Classifier(model=classifier_model, device=DEVICE)
 
-    gigamodel = SatelliteModel(segmentator, classifier, "cuda")
+    gigamodel = SatelliteModel(segmentator, classifier)
     print(gigamodel.process_image("picture.jpg"))

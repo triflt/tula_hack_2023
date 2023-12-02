@@ -26,18 +26,20 @@ class Segmentator:
 
 
 class Classifier:
-    def __init__(self, model):
+    def __init__(self, model, device):
         self.model = model
         self.model.eval()
+
+        self.device = device
 
         self.transform = transforms.Compose([
             transforms.Resize(size=(256, 256)),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
         ])
 
-    def score(self, image, result, device):
-        self.model.to(device)
-        image = torch.from_numpy(image).permute(2, 0, 1).to(device)
+    def score(self, image, result):
+        self.model.to(self.device)
+        image = torch.from_numpy(image).permute(2, 0, 1).to(self.device)
 
         for i in range(len(result)):
             x1, y1, h, w = result[i]["bbox"]
@@ -52,15 +54,14 @@ class Classifier:
 
 
 class SatelliteModel:
-    def __init__(self, segmentator, classifier, device):
+    def __init__(self, segmentator, classifier):
         self.segmentator, self.classifier = segmentator, classifier
-        self.device = device
 
     def process_image(self, path_to_image):
         image_bgr = cv2.imread(path_to_image)
         image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
 
         result = self.segmentator.predict(image_rgb)
-        result = self.classifier.score(image_rgb, result, self.device)
+        result = self.classifier.score(image_rgb, result)
 
         return result
