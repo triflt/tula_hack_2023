@@ -35,9 +35,11 @@ class SatelliteDataset(Dataset):
         for folder in os.listdir(self.root):
             if os.path.isdir(f"{self.root}/{folder}"):
                 for file in os.listdir(f"{self.root}/{folder}"):
-                    self.paths.append(f"{self.root}/{folder}/{file}")
-                    self.labels.append(folder)
-                    self.encoded_labels.append(class2id[folder])
+                    if file != ".DS_Store":
+                        self.paths.append(f"{self.root}/{folder}/{file}")
+                        self.labels.append(folder)
+                        self.encoded_labels.append(class2id[folder])
+
     def __getitem__(self, idx):
         img = torch.from_numpy(cv2.imread(self.paths[idx]))
         label = self.encoded_labels[idx]
