@@ -25,7 +25,9 @@ id2class = {
 }
 
 class SatelliteDataset(Dataset):
-    def __init__(self, root):
+    def __init__(self, root, transform):
+        self.transform = transform
+
         self.root = root
 
         self.paths = []
@@ -41,7 +43,10 @@ class SatelliteDataset(Dataset):
                         self.encoded_labels.append(class2id[folder])
 
     def __getitem__(self, idx):
-        img = torch.from_numpy(cv2.imread(self.paths[idx]))
+        img = torch.from_numpy(cv2.imread(self.paths[idx])).permute(2, 0, 1).float()
+
+        if self.transform:
+            img = self.transform(img)
         label = self.encoded_labels[idx]
 
         return img, label

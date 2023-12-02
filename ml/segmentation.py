@@ -4,10 +4,10 @@ import cv2
 import supervision as sv
 from segment_anything import sam_model_registry, SamAutomaticMaskGenerator, SamPredictor
 
-CHECKPOINT_PATH = os.path.join("weights", "sam_vit_h_4b8939.pth")
+CHECKPOINT_PATH = os.path.join("model/weights", "sam_vit_h_4b8939.pth")
 DEVICE = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 MODEL_TYPE = "vit_h"
-IMAGE_PATH = "picture.jpg"
+IMAGE_PATH = "model/picture.jpg"
 
 
 class Segmentator:
