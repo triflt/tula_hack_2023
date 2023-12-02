@@ -1,0 +1,6 @@
+"git+https://github.com/facebookresearch/segment-anything.git"
+jupyter_bbox_widget
+roboflow
+dataclasses-json
+supervision
+torch torchvision --index-url https://download.pytorch.org/whl/cu118
