@@ -1,0 +1,28 @@
+[data-testid='stFileUploader'] section > input + div span:first-child {
+    display: none;
+}
+[data-testid='stFileUploader'] section > input + div:before {
+    content: 'Прикрепите снимок';
+    display: block;
+    font-weight: 600;
+    font-size: 1.125rem;
+}
+[data-testid='stFileUploader'] section > input + div {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+[data-testid='stFileUploader'] section > button {
+    width: 100%;
+}
+[data-testid='stFormSubmitButton'] {
+    display: flex;
+    justify-content: center;
+}
+[data-testid='stFormSubmitButton'] button {
+    width: 60%;
+    margin: 0 auto;
+}
+[data-testid='stFileUploader'] [data-testid='stWidgetLabel'] {
+    display: none;
+}

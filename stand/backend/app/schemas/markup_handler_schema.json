@@ -1,0 +1,37 @@
+{
+  "type": "object",
+  "properties": {
+    "bbox": {
+      "type": "object",
+      "properties": {
+        "left_lon": {
+          "type": "number"
+        },
+        "top_lat": {
+          "type": "number"
+        },
+        "right_lon": {
+          "type": "number"
+        },
+        "bottom_lat": {
+          "type": "number"
+        }
+      },
+      "required": ["left_lon", "top_lat", "right_lon", "bottom_lat"]
+    },
+    "image": {
+      "type": "object",
+      "properties": {
+        "base64data": {
+          "type": "string"
+        },
+        "filename": {
+          "type": "string"
+        }
+      },
+      "required": ["base64data", "filename"]
+    }
+  },
+  "additionalProperties": false,
+  "required": ["image"]
+}
