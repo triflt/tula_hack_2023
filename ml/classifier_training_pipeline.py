@@ -17,6 +17,8 @@ def train_epoch(model, loader, criterion, optimizer, scheduler, device):
     all_probas = []
 
     for images, labels in loader:
+        images, labels = images.to(device), labels.to(device)
+
         optimizer.zero_grad()
         outputs = model(images)
         loss = criterion(outputs, labels)
@@ -52,6 +54,8 @@ def eval_epoch(model, loader, criterion, device):
 
     with torch.no_grad():
         for images, labels in loader:
+            images, labels = images.to(device), labels.to(device)
+
             outputs = model(images)
             loss = criterion(outputs, labels)
 
