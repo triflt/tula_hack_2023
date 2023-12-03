@@ -33,7 +33,8 @@ class Classifier:
         self.device = device
 
         self.transform = transforms.Compose([
-            transforms.Resize(size=(256, 256)),
+            transforms.Pad(256),
+            transforms.CenterCrop(256),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
         ])
 
