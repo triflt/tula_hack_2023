@@ -1,0 +1,21 @@
+FROM python:3.11-bookworm
+MAINTAINER sssemion
+RUN apt-get update -y
+RUN apt-get install git -y
+RUN apt-get install ffmpeg libsm6 libxext6  -y
+COPY ./stand/backend /app/stand/backend
+COPY ./stand/requirements.txt /app/stand/requirements.txt
+COPY ./ml /app/ml
+COPY ./requirements.txt /app/requirements.txt
+WORKDIR /app
+
+RUN pip3 install -r requirements.txt
+
+WORKDIR /app/ml/model
+RUN ./setup.sh
+WORKDIR /app
+
+RUN mkdir -p stand/backend/app/tmp/file_uploads
+
+RUN export PYTHONPATH=/app/
+CMD python3 -m flask --app stand/backend/app run --host 0.0.0.0 --port 5000

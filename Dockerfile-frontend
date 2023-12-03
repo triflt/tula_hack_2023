@@ -1,0 +1,12 @@
+FROM python:3.11-bookworm
+MAINTAINER sssemion
+RUN apt-get update -y
+COPY ./stand/streamlit_form /app/stand/streamlit_form
+COPY ./stand/streamlit_form/requirements.txt /app/requirements.txt
+COPY ./streamlit_form_config_prod.yaml /app/stand/streamlit_form/config.yaml
+WORKDIR /app
+
+RUN pip3 install -r requirements.txt
+
+RUN export PYTHONPATH=/app/
+CMD python3 -m streamlit run stand/streamlit_form/form.py --server.address 0.0.0.0 --server.port 80
