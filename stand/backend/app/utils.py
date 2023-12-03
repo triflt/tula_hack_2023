@@ -11,7 +11,7 @@ from flask import abort, request
 from werkzeug.utils import secure_filename
 
 BASE_SCHEMA_PATH = Path('stand/backend/app/schemas')
-TMP_UPLOAD_FOLDER = '/stand/backend/app/tmp/file_uploads'
+TMP_UPLOAD_FOLDER = Path('/stand/backend/app/tmp/file_uploads')
 
 
 def validate_json(schema_filename: str):
@@ -32,7 +32,7 @@ def validate_json(schema_filename: str):
 @contextlib.contextmanager
 def save_tmpfile(blob: bytes, base_filename: str) -> Path:
     filename = Path(f'{uuid.uuid4()}_{secure_filename(base_filename)}')
-    with open(filename, 'wb') as fd:
+    with open(TMP_UPLOAD_FOLDER / filename, 'wb') as fd:
         fd.write(blob)
 
     try:
