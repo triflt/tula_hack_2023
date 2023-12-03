@@ -109,6 +109,13 @@ if submit:
                     st.write(f'Координаты: {", ".join(map(lambda x: f"{x:.6f}", building_data["coordinates_bbox"]))}')
                 if 'area_in_metres' in building_data:
                     st.write(f'Площадь: {building_data["area_in_metres"]:.2f} м²')
+                if 'rosreestr' in building_data:
+                    if not building_data['rosreestr']['found']:
+                        st.write('Постройка не найдена на публичной кадастровой карте')
+                    else:
+                        st.write(
+                            f'Здание найдено на публичной кадастровой карте. Кадастровый номер: '
+                            f'{building_data["rosreestr"]["cadastral_number"]}')
                 st.divider()
         with col2:
             st.write('Типы зданий:')

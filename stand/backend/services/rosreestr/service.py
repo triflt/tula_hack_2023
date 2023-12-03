@@ -1,16 +1,12 @@
-from functools import cached_property
-
-from rosreestr_api.clients import PKKRosreestrAPIClient
+import requests
 
 
 class RosreestrService:
+    BASE_URL = 'http://pkk.rosreestr.ru/api'
+    SEARCH_BUILDING_BY_COORDINATES = BASE_URL + '/features/5?text={lat}%20{long}&limit={limit}&tolerance={tolerance}'
 
-    @cached_property
-    def client(self):
-        return PKKRosreestrAPIClient()
-
-
-if __name__ == '__main__':
-    service = RosreestrService()
-    buildings = service.client.get_building_by_coordinates(long=37, lat=55)
-    print(buildings)
+    def get_building_by_coordinates(self, lat: float, long: float) -> dict | None:
+        response = requests.get(self.SEARCH_BUILDING_BY_COORDINATES.format(lat=lat, long=long, limit=1, tolerance=2),
+                                verify=False)
+        response_data = response.json()
+        return response_data['features'][0] if response_data['total'] else None

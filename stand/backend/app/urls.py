@@ -11,6 +11,7 @@ from stand.backend.services.classification.config import DEFAULT_CONFIG
 from stand.backend.services.classification.typing import Buildings
 from stand.backend.services.coordinates_calculator.service import CoordinatesCalculator
 from stand.backend.services.image_rendering.service import ImageRenderer
+from stand.backend.services.rosreestr.service import RosreestrService
 
 urls = Blueprint('app', __name__, url_prefix='/api/v1')
 
@@ -33,6 +34,7 @@ def markup_handler():
             ),
             image_size=image_renderer.image.size,
         ) if 'bbox' in request.json else None
+        rosreestr = RosreestrService()
         buildings_json = []
         idx = 0
         for item in classificator.classification_result:
@@ -52,8 +54,16 @@ def markup_handler():
                 'area_in_px': item['area'],
             }
             if coords_calculator:
-                building_json['coordinates_bbox'] = coords_calculator.get_coordinates_of_bbox(bbox)
+                coords = coords_calculator.get_coordinates_of_bbox(bbox)
+                building_json['coordinates_bbox'] = coords
                 building_json['area_in_metres'] = coords_calculator.get_real_area(item['area'])
+
+                building_json['rosreestr'] = {'found': False}
+                left_lon, top_lat, right_lon, bottom_lat = coords
+                if rosreestr_building := rosreestr.get_building_by_coordinates(long=(left_lon + right_lon) / 2,
+                                                                               lat=(top_lat + bottom_lat) / 2):
+                    building_json['rosreestr']['found'] = True
+                    building_json['rosreestr']['cadastral_number'] = rosreestr_building['attrs']['cn']
 
             buildings_json.append(building_json)
 
