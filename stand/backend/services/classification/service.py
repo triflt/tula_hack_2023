@@ -14,8 +14,8 @@ class Classificator:
         self.config = config
 
     @cached_property
-    def classification_result(self):
-        return self.model.process_image(str(self.image_path))
+    def classification_result(self) -> list[dict]:
+        return sorted(self.model.process_image(str(self.image_path)), key=lambda x: x['area'], reverse=True)
 
     @cached_property
     def _classifier_model(self) -> Any:

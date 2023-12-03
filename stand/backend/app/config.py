@@ -9,3 +9,5 @@ BUILDING_COLORS: dict[Buildings, tuple[int, int, int]] = {
     Buildings.POOL: (0, 0, 255),
     Buildings.NOTHING: (0, 0, 0),
 }
+
+MIN_BUILDING_AREA = 150

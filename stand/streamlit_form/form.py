@@ -1,5 +1,4 @@
 import base64
-import time
 from io import BytesIO
 from pathlib import Path
 
@@ -67,23 +66,61 @@ with st.sidebar:
                 st.stop()
             if not all(map(lambda x: x is not None, (left_lon, top_lat, right_lon, bottom_lat))):
                 st.warning('Координаты и размеры объектов не будут вычислены', icon="⚠️")
+            else:
+                if left_lon >= right_lon or top_lat <= bottom_lat:
+                    st.error('Некорректные координаты')
+                    st.stop()
 
 if submit:
     with st.spinner('Размечаем снимок'):
+        payload = {
+            'image': {
+                'base64data': base64.b64encode(file.read()).decode('ascii'),
+                'filename': file.name,
+            }
+        }
+        if all(map(lambda x: x is not None, (left_lon, top_lat, right_lon, bottom_lat))):
+            payload['bbox'] = {
+                'left_lon': left_lon,
+                'top_lat': top_lat,
+                'right_lon': right_lon,
+                'bottom_lat': bottom_lat,
+            }
         response = requests.post(
             f'{CONFIG["api_host"]}/{CONFIG["api_base_url"]}/markup',
-            json={
-                'image': {
-                    'base64data': base64.b64encode(file.read()).decode('ascii'),
-                    'filename': file.name,
-                }
-            },
+            json=payload,
             timeout=CONFIG['api_timeout'],
         )
 
     if response.status_code != 200:
         st.error('Что-то пошло не так :( Пожалуйста, попробуйте позже')
     else:
-        io = BytesIO()
-        io.write(base64.b64decode(response.json()['image'].encode('ascii')))
-        st.image(io)
+        col1, _, col2 = st.columns((0.75, 0.05, 0.2))
+        with col1:
+            response_data = response.json()
+            io = BytesIO()
+            io.write(base64.b64decode(response_data['image'].encode('ascii')))
+            st.image(io)
+
+            st.subheader('Распознанные здания:')
+            for building_data in response_data['buildings']:
+                st.write(f'{building_data["idx"]}. {building_data["type"]}')
+                if 'coordinates_bbox' in building_data:
+                    st.write(f'Координаты: {", ".join(map(lambda x: f"{x:.6f}", building_data["coordinates_bbox"]))}')
+                if 'area_in_metres' in building_data:
+                    st.write(f'Площадь: {building_data["area_in_metres"]:.2f} м²')
+                st.divider()
+        with col2:
+            st.write('Типы зданий:')
+            st.markdown('<span class="building_type_caption" id="greenhouse_caption">Теплица</span>',
+                        unsafe_allow_html=True)
+            st.markdown('<span class="building_type_caption" id="private_house_caption">Частный дом</span>',
+                        unsafe_allow_html=True)
+            st.markdown('<span class="building_type_caption" id="public_building_caption">Общественное здание</span>',
+                        unsafe_allow_html=True)
+            st.markdown('<span class="building_type_caption" id="public_house_caption">Многоквартирный дом</span>',
+                        unsafe_allow_html=True)
+            st.markdown('<span class="building_type_caption" id="barn_caption">Сарай</span>',
+                        unsafe_allow_html=True)
+            st.markdown('<span class="building_type_caption" id="pool_caption">Бассейн</span>',
+                        unsafe_allow_html=True)

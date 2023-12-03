@@ -26,3 +26,38 @@
 [data-testid='stFileUploader'] [data-testid='stWidgetLabel'] {
     display: none;
 }
+
+.building_type_caption::before {
+    content: "";
+    display: inline-block;
+    margin-right: 1em;
+    top: 3px;
+    width: 1em;
+    height: 1em;
+    border: 3px solid;
+    position: relative;
+}
+
+.building_type_caption {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+#greenhouse_caption::before {
+    border-color: rgb(124, 252, 0);
+}
+#private_house_caption::before {
+    border-color: rgb(204, 102, 0);
+}
+#public_building_caption::before {
+    border-color: rgb(31, 174, 233);
+}
+#public_house_caption::before {
+    border-color: rgb(125, 127, 125);
+}
+#barn_caption::before {
+    border-color: rgb(248, 243, 43);
+}
+#pool_caption::before {
+    border-color: rgb(0, 0, 255);
+}
